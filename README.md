@@ -11,7 +11,7 @@ tensorflow>=2.3.0
 ```
 ### Dataset
 
-The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge]{http://medicaldecathlon.com/} and extracted to your local machine.
+The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine.
 
 ## How To Use
 The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
