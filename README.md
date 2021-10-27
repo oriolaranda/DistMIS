@@ -14,9 +14,10 @@ tensorflow>=2.3.0
 The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge]{http://medicaldecathlon.com/} and extracted to your local machine.
 
 ## How To Use
+The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
 
 ### Tfrecord
-The tfrecord script reads the `dataset.json` file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the dataset folder path as argument, e.g. /home/Task01_BrainTumor/.
+The `tfrecord` script reads the `dataset.json` file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the dataset folder path as argument, e.g. /home/Task01_BrainTumor/.
 
 ```console
 foo@bar:~$ python tfrecord.py --help
