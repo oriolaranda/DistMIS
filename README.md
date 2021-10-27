@@ -35,16 +35,16 @@ optional arguments:
                                shape. If a different shape is provided, a trilinear resize will be applied to 
                                the data.
 ```
-#### Example:
+#### Examples:
 Creating the target directory
 ```console
 foo@bar:~$ mkdir dataset
 ```
-Creating the tfrecord dataset into the created directory _dataset_
+Creating the tfrecord dataset into the created directory _dataset_.
 ```console
 foo@bar:~$ python tfrecord.py --source_dir /home/Task01_BrainTumor/ --target_source /home/dataset/
 ```
-Creating a tfrecord dataset with smaller size data, and different split sets
+Creating a tfrecord dataset with smaller size data, and different split sets.
 
 ```console
 foo@bar:~$ python tfrecord.py --source_dir /home/Task01_BrainTumor/ --target_source /home/dataset/ \ 
@@ -72,14 +72,19 @@ optional arguments:
                                 containing the plotted image.
 
 ```
-#### Example:
+#### Examples:
 Visualizing the written data in TFRecord format, the default sample is the number 0.
 ```console
 foo@bar:~$ python visualize.py --dataset_dir /home/dataset/
 ```
+Visualizing the sample number 350, since we are working via ssh with no x session, we enable _--no_screeen_ flag to save a GIF file.
+```console
+foo@bar:~$ python visualize.py --dataset_dir /home/dataset/ --sample 350 --no_screen True
+```
 
 ### Data Parallelism
-
+The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism using tf.MirroredStrategy tensorflow built-in distributed .
 
 ### Experiment Parallelism
+The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using Ray.Tune.
 
