@@ -1,15 +1,17 @@
 
 <h1 align="center">
   Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
-  <br><br>
-  <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="600">
+  <br/><br/>
+  <img src="./images/unet.svg" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="400">
+  <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="500">
 </h1>
 
 
 ## Quick Instroduction
+Official repository.
 
 ### Citation
-If you use Edge AutoTuner for your research please cite our [preprint](./):
+If you use our code for your research please cite our [preprint](./):
 > "TODO: Citar paper"
 
 <br/><br/>
