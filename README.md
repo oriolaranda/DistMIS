@@ -1,7 +1,18 @@
-# Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
-Official Repository for the paper: Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation 
 
-<br/><br/><br/><br/>
+<h1 align="center">
+  Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
+  <br><br>
+  <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="600">
+</h1>
+
+
+## Quick Instroduction
+
+### Citation
+If you use Edge AutoTuner for your research please cite our [preprint](./):
+> "TODO: Citar paper"
+
+<br/><br/>
 
 ## Setup
 ### Installation:
@@ -30,8 +41,11 @@ The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been download
 The data is composed by 3D samples of shape (240,240,155,4) for the brain images and (240,240,155,1) for the ground truth segmentation masks. The data format is NIfTI, commonly used in medical imaging. A transposition of the channels is applied and the shape of the samples is reduced to (4,240,240,152) and (1, 240,240,152). Additionally, standardization is applied to the brain images and the 3 clases for the labels are joined to form a binary clasification problem: pixel is tumor (1) or is not (0).
 
 In the following figure the 4 channels from the brain images and the ground truth are shown.
-![](./images/dataset_msd.png)
+<p align="center">
+<img src="./images/dataset_msd.png" alt="Brain Tumor MSD dataset">
+</p>
 <br/><br/><br/><br/>
+
 ## How To Use
 The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
 
@@ -110,7 +124,10 @@ Visualizing the sample number 350, since we are working via ssh with no x sessio
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen
 ```
-![](./images/sample_2.gif)
+<br/>
+<p align="center">
+<img src="./images/sample_2.gif" alt="Visualization of one sample">
+</p>
 
 <br/><br/>
 
