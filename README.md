@@ -36,7 +36,14 @@ foo@bar:~$ python -m pip install -r requirements.txt
 
 The scrips work with python >= 3.7.4 and uses the following packages:
 ```
-tensorflow>=2.3.0
+tensorflow==2.3.0
+tensorflow-addons==0.13.0
+ray==1.4.1
+numpy==1.18.4
+imageio==2.6.1
+matplotlib==3.4.3
+nibabel
+tqdm
 ```
 ### Dataset:
 
@@ -214,6 +221,10 @@ usage: exp_parallel.py [-h] --config CONFIG
 optional arguments:
   -h, --help       Show this help message and exit
   --config CONFIG  Path: Json file configuration
+```
+It is a well practice to shutdown the ray cluster when the work is done.
+```console
+foo@bar:~$ ray stop
 ```
 
 
