@@ -42,8 +42,8 @@ ray==1.4.1
 numpy==1.18.4
 imageio==2.6.1
 matplotlib==3.4.3
-nibabel
-tqdm
+nibabel==3.2.1
+tqdm==4.46.1
 ```
 ### Dataset:
 
