@@ -321,7 +321,7 @@ done
 # ===== Call your code below =====
 ```
 With the first part of the script we have requested the resources via slurm and we have started a ray cluster. The script continues with the following lines where you can call the script you wish.
-```
+```bash
 export PYTHONUNBUFFERED=1
 python data_parallelism.py --config ./config.json
 ```
