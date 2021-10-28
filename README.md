@@ -64,11 +64,13 @@ foo@bar:~$ mkdir dataset
 Creating the tfrecord dataset into the created directory _dataset_.
 ```console
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/
+...
 ```
 Creating a tfrecord dataset with smaller size data, and different split sets.
 
 ```console
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
+...
 ```
 
 ### Visualize
@@ -101,8 +103,9 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/
 Visualizing the sample number 350, since we are working via ssh with no x session, we enable _--no-screeen_ flag to save a GIF file.
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen
+GIF created!
 ```
-![](./images/gif_sample_2.gif)
+![](./images/sample_2.gif)
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
@@ -110,6 +113,23 @@ Data parallelism consists in, given n GPUs, the model is replicated n times and 
 Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, tf.MirroredStrategy is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.sgd which is a wrapper around tf.MultiWorkerMirroredStrategy.
 Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
 
+```console
+foo@bar:~$ python visualize.py --help
+usage: visualize.py [-h] --dataset-dir DATASET_DIR [--sample SAMPLE] [--data-shape DATA_SHAPE] 
+                         [--no-screen NO_SCREEN]
+
+optional arguments:
+  -h, --help                    Show this help message and exit
+  --dataset-dir DATASET_DIR     Path: TFRecord dataset directory.
+  --sample SAMPLE               Int: Sample to visualize. Default=0. It has to be 
+                                0 <= sample <= size_dataset.
+  --data-shape DATA_SHAPE       Tuple: Shape of the data in the dataset path provided. 
+                                Default=(240, 240, 152) which is the orginal data shape.
+  --no-screen                   No X session (graphical Linux desktop) mode. If it used, a 
+                                GIF file will be saved in the current directory ('./') 
+                                containing the plotted image.
+
+```
 
 
 ### Experiment Parallelism
@@ -117,5 +137,21 @@ The `exp_parallel` script is the second approach presented in the paper, given a
 Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training n models at the same time, speeding-up the computations of all the m models.
 As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
 
+```console
+foo@bar:~$ python visualize.py --help
+usage: visualize.py [-h] --dataset-dir DATASET_DIR [--sample SAMPLE] [--data-shape DATA_SHAPE] 
+                         [--no-screen NO_SCREEN]
 
+optional arguments:
+  -h, --help                    Show this help message and exit
+  --dataset-dir DATASET_DIR     Path: TFRecord dataset directory.
+  --sample SAMPLE               Int: Sample to visualize. Default=0. It has to be 
+                                0 <= sample <= size_dataset.
+  --data-shape DATA_SHAPE       Tuple: Shape of the data in the dataset path provided. 
+                                Default=(240, 240, 152) which is the orginal data shape.
+  --no-screen                   No X session (graphical Linux desktop) mode. If it used, a 
+                                GIF file will be saved in the current directory ('./') 
+                                containing the plotted image.
+
+```
 
