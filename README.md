@@ -24,7 +24,7 @@ The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been download
 * imagesTr: Brain images for training.
 * labelsTr: Label images for training.
 
-> Note that the imagesTs are not used because their respective labels are not provided.
+> Note that the folder imagesTs is not used because their respective labels are not provided. The training, validation and test sets are split using the data available (imagesTr and labelsTr).
 
 The data is composed by 3D samples of shape (240,240,155,4) for the brain images and (240,240,155,1) for the ground truth segmentation masks. The data format is NIfTI, commonly used in medical imaging. A transposition of the channels is applied and the shape of the samples is reduced to (4,240,240,152) and (1, 240,240,152). Additionally, standardization is applied to the brain images and the 3 clases for the labels are joined to form a binary clasification problem: pixel is tumor (1) or is not (0).
 
@@ -40,6 +40,7 @@ The `tfrecord` script reads the `dataset.json` file located inside the dataset f
 * Optimize data reading, online preprocessing and data augmentation.
 It can seem the benefits are poor, but in Deep Learning applications with this type of data, these optimization techniques save hours of training.
 
+##### Usage:
 ```console
 foo@bar:~$ python tfrecord.py --help
 usage: tfrecord.py [-h] --source-dir SOURCE_DIR [--target-dir TARGET_DIR] [--split SPLIT] [--reshape RESHAPE]
@@ -56,14 +57,16 @@ optional arguments:
                                shape. If a different shape is provided, a trilinear resize will be applied to 
                                the data.
 ```
-#### Examples:
+##### Examples:
 Creating the target directory
 ```console
 foo@bar:~$ mkdir dataset
+
 ```
 Creating the tfrecord dataset into the created directory _dataset_.
 ```console
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/
+
 ```
 Creating a tfrecord dataset with smaller size data, and different split sets.
 
@@ -71,11 +74,14 @@ Creating a tfrecord dataset with smaller size data, and different split sets.
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
 ```
 
+
+
 ### Visualize
 The `visualize` script is just an auxiliary script for visualizing the data after doing the tfrecord
 and other possible transformations, e.g. offline data_augmentation. It is also useful for debugging
 purposes, e.g. testing some transformation or preprocessing functions, before deploying.
 
+##### Usage:
 ```console
 foo@bar:~$ python visualize.py --help
 usage: visualize.py [-h] --dataset-dir DATASET_DIR [--sample SAMPLE] [--data-shape DATA_SHAPE] 
@@ -93,7 +99,7 @@ optional arguments:
                                 containing the plotted image.
 
 ```
-#### Examples:
+##### Examples:
 Visualizing the written data in TFRecord format, the default sample is the number 0.
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/
@@ -101,9 +107,11 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/
 Visualizing the sample number 350, since we are working via ssh with no x session, we enable _--no-screeen_ flag to save a GIF file.
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen
-GIF created!
 ```
 ![](./images/sample_2.gif)
+
+
+
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
@@ -111,6 +119,7 @@ Data parallelism consists in, given n GPUs, the model is replicated n times and 
 Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, tf.MirroredStrategy is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.sgd which is a wrapper around tf.MultiWorkerMirroredStrategy.
 Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
 
+##### Usage:
 ```console
 foo@bar:~$ python data_parallel.py --help
 usage: data_parallel.py [-h] --config CONFIG
@@ -119,6 +128,9 @@ optional arguments:
   -h, --help       Show this help message and exit
   --config CONFIG  Path: Json file configuration
 ```
+##### Examples:
+
+
 
 
 ### Experiment Parallelism
@@ -126,6 +138,7 @@ The `exp_parallel` script is the second approach presented in the paper, given a
 Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training n models at the same time, speeding-up the computations of all the m models.
 As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
 
+##### Usage:
 ```console
 foo@bar:~$ python exp_parallel.py --help
 usage: exp_parallel.py [-h] --config CONFIG
@@ -133,6 +146,6 @@ usage: exp_parallel.py [-h] --config CONFIG
 optional arguments:
   -h, --help       Show this help message and exit
   --config CONFIG  Path: Json file configuration
-
 ```
-
+##### Examples:
+  heloo
