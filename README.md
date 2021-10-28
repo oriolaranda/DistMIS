@@ -1,6 +1,7 @@
 # Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
 Official Repository for the paper: Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation 
 
+<br/><br/><br/><br/>
 
 ## Setup
 ### Installation:
@@ -30,7 +31,7 @@ The data is composed by 3D samples of shape (240,240,155,4) for the brain images
 
 In the following figure the 4 channels from the brain images and the ground truth are shown.
 ![](./images/dataset_msd.png)
-
+<br/><br/><br/><br/>
 ## How To Use
 The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
 
@@ -74,7 +75,7 @@ Creating a tfrecord dataset with smaller size data, and different split sets.
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
 ```
 
-
+<br/><br/>
 
 ### Visualize
 The `visualize` script is just an auxiliary script for visualizing the data after doing the tfrecord
@@ -110,8 +111,7 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-sc
 ```
 ![](./images/sample_2.gif)
 
-
-
+<br/><br/>
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
@@ -131,7 +131,7 @@ optional arguments:
 ##### Examples:
 
 
-
+<br/><br/>
 
 ### Experiment Parallelism
 The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using ray.tune which manages all the low level parallelism implementaion.
