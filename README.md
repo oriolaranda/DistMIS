@@ -83,7 +83,7 @@ The `visualize` script is just an auxiliary script for visualizing the data afte
 and other possible transformations, e.g. offline data_augmentation. It is also useful for debugging
 purposes, e.g. testing some transformation or preprocessing functions, before deploying.
 
-#### Usage:
+##### Usage:
 ```console
 foo@bar:~$ python visualize.py --help
 usage: visualize.py [-h] --dataset-dir DATASET_DIR [--sample SAMPLE] [--data-shape DATA_SHAPE] 
@@ -101,7 +101,7 @@ optional arguments:
                                 containing the plotted image.
 ```
 
-#### Examples:
+##### Examples:
 Visualizing the written data in TFRecord format, the default sample is the number 0.
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/
@@ -145,7 +145,19 @@ optional arguments:
 If we are using **multi node**, we first need to initialize a ray cluster and then execute the script as above. Please refer to the section [Multi-node Ray Cluster](#multi-node-ray-cluster).
 
 ##### Examples:
-
+So first, let's define our config JSON file named _config.json_.
+```python
+{
+    "num_replicas": 4,
+    "batch_size_per_replica": 2,
+    "num_epochs": 20,
+    "debug": false
+}
+```
+Afterwards, we can simply call the script with our config file.
+```console
+foo@bar:~$ python exp_parallel.py --config config.json
+```
 
 <br/><br/>
 
@@ -154,7 +166,7 @@ The `exp_parallel` script is the second approach presented in the paper, given a
 Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training n models at the same time, speeding-up the computations of all the m models.
 As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
 
-#### Usage:
+##### Usage:
 First of all a configuration JSON file is required to execute the script. This configuration file has some parameters which are required shown below:
 
 - batch_size_per_replica       
@@ -164,7 +176,7 @@ First of all a configuration JSON file is required to execute the script. This c
 - debug:
   > (bool) Mode debug. If true, no tensorboard files will be saved and the training verbosity is set for every step. Otherwise the training verbosity is set for epoch and the tensorboard files will be saved.
 
-In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS. If we are using a **single node** then we can type the following command. If we are using **multi-node**, please refer to the to the section [Multi-node ray cluster](#multi-node-ray-cluster).
+In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS. If we are using a **single node** then we can type the following command. If we are using **multi-node**, please ignore this command and refer to the to the section [Multi-node ray cluster](#multi-node-ray-cluster).
 ```console
 foo@bar:~$ ray start --head --num-cpus=NUM_CPUS --num-gpus=NUM_GPUS
 ```
@@ -179,7 +191,7 @@ optional arguments:
 ```
 
 
-#### Examples:
+##### Examples:
 First we define out config as JSON file named _config.json_ and afterwards we initialize a ray cluster with 20 CPUs and 2 GPUs.
 ```python
 {
@@ -196,5 +208,12 @@ Finally we can call the script with our config file.
 foo@bar:~$ python exp_parallel.py --config config.json
 ```
 
+<br/><br/>
+
 ### Multi-node Ray Cluster
-Here we show an example to start a ray cluster using slurm.
+In our case we are using a cluster with 4 GPUs per node, so given n GPUs for n >= 4, we are using multi-node.
+If you are using **multi-node**, you need to start a ray cluster in a different way from what is shown in the previous sections. Once the cluster is initialized you can run the script as usual.
+Here we show an example to start a ray cluster using **SLURM**.
+```
+Slurm example
+```
