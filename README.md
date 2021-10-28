@@ -15,7 +15,7 @@
 </p>
 
 ## Quick Introduction
-Official repository.
+Official repository. And quick introduction to the paper?
 
 ### Citation
 If you use our code for your research please cite our [preprint](./):
