@@ -2,8 +2,8 @@
 <h1 align="center">
   Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
   <br/><br/>
-  <img src="./images/3d_unet.svg" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="400">
-  <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="450">
+  <img src="./images/3d_unet.svg" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="300">
+  <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="350">
   <br/><br/>
   
 </h1>
