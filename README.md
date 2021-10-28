@@ -25,7 +25,10 @@ The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been download
 The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
 
 ### Tfrecord
-The `tfrecord` script reads the `dataset.json` file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the dataset folder path as argument, e.g. /home/Task01_BrainTumor/.
+The `tfrecord` script reads the `dataset.json` file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the orignal dataset directory path as argument, e.g. /home/Task01_BrainTumor/. If the target directory is provided, the tf.data.Dataset is serialized and saved in TFRecord format into that directory. Running this script is **the first step** in order to run the other scripts. Serializing the dataset the memory footprint will be larger but it has good benefits:
+* Perform offline preprocessing and data augmentation.
+* Optimize data reading, online preprocessing and data augmentation.
+It can seem the benefits are poor, but in Deep Learning applications with this type of data, these optimization techniques save hours of training.
 
 ```console
 foo@bar:~$ python tfrecord.py --help
@@ -91,13 +94,13 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-sc
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
-Data parallelism consists in, given n GPUs, the model is replicated n times and each replica is sent to a GPU. After that, the data is split into n chunks, i.e. the batch size is diveded by n, these chunks are distributed across the GPUs, where each chunk is assigned to a GPU. Hence, we are speeding-up the training of the model.
+Data parallelism consists in, given n GPUs, the model is replicated n times and each replica is sent to a GPU. After that, the data is split into n chunks, i.e. the batch size is diveded by n, these chunks are distributed across the GPUs, where each chunk is assigned to a GPU. If we are training m models and m >= n, then we proceed sequentially for each model. Since we are using more than 1 GPU we are speeding-up the training of each model, and therefore, the m models.
 Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, tf.MirroredStrategy is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.sgd which is a wrapper around tf.MultiWorkerMirroredStrategy.
 Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
 
 ### Experiment Parallelism
 The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using ray.tune which manages all the low level parallelism implementaion.
-Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training all the n models at the same time, speeding-up the computations of the m models.
+Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training n models at the same time, speeding-up the computations of all the m models.
 As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
 
 
