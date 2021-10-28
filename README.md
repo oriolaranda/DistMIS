@@ -19,7 +19,14 @@ tensorflow>=2.3.0
 ```
 ### Dataset
 
-The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine.
+The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine. The directory of the original dataset is slightly used in the next sections and it refers to the extracted folder. This folder must contain:
+* dataset.json: Information about the dataset.
+* imagesTr: Brain images for training.
+* labelsTr: Label images for training.
+
+> Note that the imagesTs are not used because their respective labels are not provided.
+
+The data is composed by 3D samples of shape (240,240,155,4) for the brain images and (240,240,155,1) for the ground truth segmentation masks. The data format is NIfTI, commonly used in medical imaging. A transposition of the channels is applied and the shape of the samples is reduced to (4,240,240,152) and (1, 240,240,152). Additionally, standardization is applied to the brain images and the 3 clases for the labels are joined to form a binary clasification problem: pixel is tumor (1) or is not (0).
 
 ## How To Use
 The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
@@ -91,7 +98,7 @@ Visualizing the sample number 350, since we are working via ssh with no x sessio
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen True
 ```
-![](./images/giphy.gif)
+![](./images/gif_sample_2.gif)
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
