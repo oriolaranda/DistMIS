@@ -1,4 +1,4 @@
-<br/><br/><br/><br/>
+<br/><br/><br/>
 <h1 align="center">
   Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
   <br/><br/>
