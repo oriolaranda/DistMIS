@@ -3,6 +3,14 @@ Official Repository for the paper: Distributing Deep Learning Hyperparameter Tun
 
 
 ## Setup
+### Installation
+Just download the code, and execute inside the directory. You can clone the repository doing:
+```python
+git clone https://github.com/HiEST/edgeautotuner.git
+cd 
+python -m pip install -r requirements.txt
+```
+
 ### Requirements
 
 The scrips work with python >= 3.7.4 and uses the following packages:
