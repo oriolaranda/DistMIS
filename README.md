@@ -4,11 +4,11 @@ Official Repository for the paper: Distributing Deep Learning Hyperparameter Tun
 
 ## Setup
 ### Installation
-Just download the code, and execute inside the directory. You can clone the repository doing:
-```python
-git clone https://github.com/HiEST/edgeautotuner.git
-cd 
-python -m pip install -r requirements.txt
+Just download the code, and execute inside the directory. You can clone the repository using:
+```console
+foo@bar:~$ git clone https://github.com/oriolaranda/dist-dl-3d-mis.git
+foo@bar:~$ cd dist-dl-3d-mis/
+foo@bar:~$ python -m pip install -r requirements.txt
 ```
 
 ### Requirements
@@ -55,8 +55,7 @@ foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-sou
 Creating a tfrecord dataset with smaller size data, and different split sets.
 
 ```console
-foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ \ 
---reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
+foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ \ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
 ```
 
 ### Visualize
@@ -91,8 +90,15 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-sc
 ```
 
 ### Data Parallelism
-The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism using tf.MirroredStrategy tensorflow built-in distributed .
+The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
+Data parallelism consists in, given n GPUs, the model is replicated n times and each replica is sent to a GPU. After that, the data is split into n chunks, i.e. the batch size is diveded by n, these chunks are distributed across the GPUs, where each chunk is assigned to a GPU. Hence, we are speeding-up the training of the model.
+Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, tf.MirroredStrategy is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.sgd which is a wrapper around tf.MultiWorkerMirroredStrategy.
+Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
 
 ### Experiment Parallelism
-The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using Ray.Tune.
+The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using ray.tune which manages all the low level parallelism implementaion.
+Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training all the n models at the same time, speeding-up the computations of the m models.
+As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
+
+
 
