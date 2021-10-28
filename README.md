@@ -91,6 +91,7 @@ Visualizing the sample number 350, since we are working via ssh with no x sessio
 ```console
 foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen True
 ```
+![](./images/giphy.gif)
 
 ### Data Parallelism
 The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
