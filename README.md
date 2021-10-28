@@ -121,6 +121,18 @@ Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i
 Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
 
 ##### Usage:
+First of all a configuration JSON file is required to execute the script. This configuration file has some parameters which are required shown below:
+
+- num_replicas
+  > (int) Number of GPUs to train each model. The model will be replicated this number of times.
+- batch_size_per_replica
+  > (int) Batch size handled by each replica, i.e. GPU. In data parallelism the total_batch_size is batch_size_per_replica * num_replicas.
+- num_epochs:
+  >(int) Number of epochs each model will train for.
+- debug:
+  > (bool) Mode debug. If true, no tensorboard files will be saved and the training verbosity is set for every step. Otherwise the training verbosity is set for epoch and the tensorboard files will be saved.
+
+Once the configuration file is ready, if we are using a **single node** we can just call the script.
 ```console
 foo@bar:~$ python data_parallel.py --help
 usage: data_parallel.py [-h] --config CONFIG
@@ -129,6 +141,9 @@ optional arguments:
   -h, --help       Show this help message and exit
   --config CONFIG  Path: Json file configuration
 ```
+
+If we are using **multi node**, we first need to initialize a ray cluster and then execute the script as above. Please refer to the section [Multi-node Ray Cluster](#Multi-node-Ray-Cluster").
+
 ##### Examples:
 
 
@@ -143,13 +158,13 @@ As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used
 First of all a configuration JSON file is required to execute the script. This configuration file has some parameters which are required shown below:
 
 - batch_size_per_replica       
-  > (int) batch size handled by each replica, i.e. GPU. The total_batch_size is batch_size_per_replica * num_replicas. Since in experiment parallelism we want to train each model with a GPU, num_replicas = 1 and total_batch_size = batch_size_per_replica.
+  > (int) Batch size handled by each replica, i.e. GPU. The total_batch_size is batch_size_per_replica * num_replicas. Since in experiment parallelism we are not applying data parallelism and we train each model with a GPU, num_replicas = 1 and total_batch_size = batch_size_per_replica.
 - num_epochs:
   >(int) Number of epochs each model will train for.
 - debug:
   > (bool) Mode debug. If true, no tensorboard files will be saved and the training verbosity is set for every step. Otherwise the training verbosity is set for epoch and the tensorboard files will be saved.
 
-In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS:
+In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS. If we are using a **single node** then we can type the following command. If we are using **multi-node**, please refer to the to the section [Multi-node ray cluster](#Multi-node-Ray-Cluster").
 ```console
 foo@bar:~$ ray start --head --num-cpus=NUM_CPUS --num-gpus=NUM_GPUS
 ```
@@ -180,3 +195,6 @@ Finally we can call the script with our config file.
 ```console
 foo@bar:~$ python exp_parallel.py --config config.json
 ```
+
+### Multi-node Ray Cluster
+Here we show an example to start a ray cluster using slurm.
