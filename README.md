@@ -77,6 +77,7 @@ and other possible transformations, e.g. offline data_augmentation. It is also u
 purposes, e.g. testing some transformation or preprocessing functions, before deploying.
 
 ```console
+foo@bar:~$ python visualize.py --help
 usage: visualize.py [-h] --dataset-dir DATASET_DIR [--sample SAMPLE] [--data-shape DATA_SHAPE] 
                          [--no-screen NO_SCREEN]
 
