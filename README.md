@@ -3,7 +3,7 @@ Official Repository for the paper: Distributing Deep Learning Hyperparameter Tun
 
 
 ## Setup
-### Installation
+### Installation:
 Just download the code, and execute the scripts inside the directory. You can clone the repository using:
 ```console
 foo@bar:~$ git clone https://github.com/oriolaranda/dist-dl-3d-mis.git
@@ -11,13 +11,13 @@ foo@bar:~$ cd dist-dl-3d-mis/
 foo@bar:~$ python -m pip install -r requirements.txt
 ```
 
-### Requirements
+### Requirements:
 
 The scrips work with python >= 3.7.4 and uses the following packages:
 ```
 tensorflow>=2.3.0
 ```
-### Dataset
+### Dataset:
 
 The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine. The directory of the original dataset is slightly used in the next sections and it refers to the extracted folder. This folder must contain:
 * dataset.json: Information about the dataset.
@@ -68,7 +68,7 @@ foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-sou
 Creating a tfrecord dataset with smaller size data, and different split sets.
 
 ```console
-foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ \ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
+foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
 ```
 
 ### Visualize
@@ -88,8 +88,8 @@ optional arguments:
                                 0 <= sample <= size_dataset.
   --data-shape DATA_SHAPE       Tuple: Shape of the data in the dataset path provided. 
                                 Default=(240, 240, 152) which is the orginal data shape.
-  --no-screen NO_SCREEN         Bool: No X session (graphical Linux desktop) mode. Default=False. 
-                                If set to True, a GIF file will be saved in the current directory ('./') 
+  --no-screen                   No X session (graphical Linux desktop) mode. If it used, a 
+                                GIF file will be saved in the current directory ('./') 
                                 containing the plotted image.
 
 ```
@@ -100,7 +100,7 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/
 ```
 Visualizing the sample number 350, since we are working via ssh with no x session, we enable _--no-screeen_ flag to save a GIF file.
 ```console
-foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen True
+foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-screen
 ```
 ![](./images/gif_sample_2.gif)
 
