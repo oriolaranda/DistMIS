@@ -142,7 +142,7 @@ optional arguments:
   --config CONFIG  Path: Json file configuration
 ```
 
-If we are using **multi node**, we first need to initialize a ray cluster and then execute the script as above. Please refer to the section [Multi-node Ray Cluster](#multi-node-ray-cluster").
+If we are using **multi node**, we first need to initialize a ray cluster and then execute the script as above. Please refer to the section [Multi-node Ray Cluster](#multi-node-ray-cluster).
 
 ##### Examples:
 
@@ -164,7 +164,7 @@ First of all a configuration JSON file is required to execute the script. This c
 - debug:
   > (bool) Mode debug. If true, no tensorboard files will be saved and the training verbosity is set for every step. Otherwise the training verbosity is set for epoch and the tensorboard files will be saved.
 
-In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS. If we are using a **single node** then we can type the following command. If we are using **multi-node**, please refer to the to the section [Multi-node ray cluster](#multi-node-ray-cluster").
+In order to execute the script first we need to start a ray.cluster with the required resources, i.e. we want to use NUM_GPUS and NUM_CPUS. If we are using a **single node** then we can type the following command. If we are using **multi-node**, please refer to the to the section [Multi-node ray cluster](#multi-node-ray-cluster).
 ```console
 foo@bar:~$ ray start --head --num-cpus=NUM_CPUS --num-gpus=NUM_GPUS
 ```
