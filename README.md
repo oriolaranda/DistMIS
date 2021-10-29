@@ -1,34 +1,69 @@
-<br/><br/><br/>
-<h1 align="center">
+<!--<br/><br/><br/>-->
+<!--<h1 align="center">
   Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation
   <br/><br/>
   <img src="./images/3d_unet.svg" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="300">
   <img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="350">
   <br/><br/>
   
+</h1>-->
+
+<h1 align="center">
+  DistMIS
+  <br>
+  <small>Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation.</small>
+  <!--<br>
+  <img src="#" alt="XXXXXX" width="600">-->
 </h1>
+
+<p align="left">
+  <a href='https://opensource.org/licenses/Apache-2.0'>
+    <img src='https://img.shields.io/badge/License-Apache%202.0-blue.svg' alt='License'/>
+  </a>
+  <!--<a href="#">
+    <img src="https://zenodo.org/badge/XXXXXXX.svg" alt="DOI">
+  </a>-->
+</p>
+
+<p align="center">
+    <b>DistriMIS</b> Distributing Deep Learning Hyperparameter Tuning for 3D Medical Image Segmentation.
+</p>
 
 <p align="center">
   <a href="#quick-introduction">Quick Introduction </a> •
   <a href="#setup">Setup</a> •
-  <a href="#how-to-use">How To Use</a> •
+  <a href="#data-preparation">Data Preparation</a> •
+  <a href="#parallelism-modes">Parallelism Modes</a>
 </p>
 
 ## Quick Introduction
-Official repository. And quick introduction to the paper?
+
+DistriMIS is the open implementation of the **Data and Experiment Parallelism** design for Multi-GPU and Supercomputing environments at the **Barcelona Supercomputing Center** (BSC), focused on **Deep Learning for Medical Image Segmentation**.
+
+It provides a guide and methodology for deploying *3D U-Net*-based Deep Learning neural networks in a distributed environment for scaling. Here we use TensorFlow and Ray frameworks as engine and experiment multi-node distribution. As an example and benchmark, the **MSD Brain Tumor Segmentation dataset** is used
+
+Abstract
+> Most research on novel techniques for 3D Medical Image Segmentation (MIS) is currently done using Deep Learning with GPU accelerators. The principal challenge of such technique is that a single input can easily cope computing resources, and require prohibitive amounts of time to be processed. Distribution of deep learning and scalability over computing devices is an actual need for progressing on such research field.
+> Conventional distribution of neural networks consist in "data parallelism", where data is scattered over resources (e.g., GPUs) to parallelize the training of the model. However, "experiment parallelism" is also an option, where different training processes (i.e., on a hyper-parameter search) are parallelized across resources. While the first option is much more common on 3D image segmentation, the second provides a pipeline design with less dependence among parallelized processes, allowing overhead reduction and more potential scalability.
+> In this work we present a design for distributed deep learning training pipelines, focusing on multi-node and multi-GPU environments, where the two different distribution approaches are deployed and benchmarked. We take as proof of concept the *3D U-Net* architecture, using the MSD Brain Tumor Segmentation dataset, a state-of-art problem in medical image segmentation with high computing and space requirements.
+> Using the BSC MareNostrum supercomputer as benchmarking environment, we use TensorFlow and Ray as neural network training and experiment distribution platforms. We evaluate the experiment speed-up when parallelizing, showing the potential for scaling out on GPUs and nodes. Also comparing the different parallelism techniques, showing how experiment distribution leverages better such resources through scaling, e.g. by a speed-up factor from x12 to x14 using 32 GPUs.
+> Finally, we provide the implementation of the design open to the community, and the non-trivial steps and methodology for adapting and deploying a MIS case as the here presented.
+
+<p align="center">
+	<img src="./images/3d_unet.svg" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="300">
+	<img src="./images/pipeline.png" alt="Distributing Deep Learning for 3D Medical Image Segmentation" width="350">
+</p>
 
 ### Citation
-If you use our code for your research please cite our [preprint](./):
+If you use our code for your research, please cite our [preprint](./):
 > "TODO: Citar paper"
-
-<br/><br/>
 
 ## Setup
 ### Installation:
 Just download the code, and execute the scripts inside the directory. You can clone the repository using:
 ```console
-foo@bar:~$ git clone https://github.com/oriolaranda/dist-dl-3d-mis.git
-foo@bar:~$ cd dist-dl-3d-mis/
+foo@bar:~$ git clone https://github.com/HiEST/DistMIS
+foo@bar:~$ cd DistMIS/
 foo@bar:~$ python -m pip install -r requirements.txt
 ```
 
@@ -47,7 +82,7 @@ tqdm==4.46.1
 ```
 ### Dataset:
 
-The `tfrecord` script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine. The directory of the original dataset is slightly used in the next sections and it refers to the extracted folder. This folder must contain:
+The *tfrecord* script assumes that the _Task01_BrainTumor.tar_ has been downloaded from its official webpage [MSD Challenge](http://medicaldecathlon.com/) and extracted to your local machine. The directory of the original dataset is slightly used in the next sections and it refers to the extracted folder. This folder must contain:
 * dataset.json: Information about the dataset.
 * imagesTr: Brain images for training.
 * labelsTr: Label images for training.
@@ -58,15 +93,17 @@ The data is composed by 3D samples of shape (240,240,155,4) for the brain images
 
 In the following figure the 4 channels from the brain images and the ground truth are shown.
 <p align="center">
-<img src="./images/dataset_msd.png" alt="Brain Tumor MSD dataset">
+	<img src="./images/dataset_msd.png" alt="Brain Tumor MSD dataset">
 </p>
-<br/><br/><br/><br/>
 
-## How To Use
-The framework is composed by 4 main scripts: `tfrecord`, `visualize`, `data_parallel` and `exp_parallel`.
+### Scripts:
+
+The framework is composed by 4 main scripts: *tfrecord*, *visualize* (basic preparation), also *data_parallel* and *exp_parallel* (parallelism modes).
+
+## Data Preparation
 
 ### Tfrecord
-The `tfrecord` script reads the `dataset.json` file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the orignal dataset directory path as argument, e.g. /home/Task01_BrainTumor/. If the target directory is provided, the tf.data.Dataset is serialized and saved in TFRecord format into that directory. Running this script is **the first step** in order to run the other scripts. Serializing the dataset the memory footprint will be larger but it has good benefits:
+The *tfrecord* script reads the *dataset.json* file located inside the dataset folder, and creates a tf.data.Dataset from the imagesTr and labelsTr samples. It requires the orignal dataset directory path as argument, e.g. /home/Task01_BrainTumor/. If the target directory is provided, the tf.data.Dataset is serialized and saved in TFRecord format into that directory. Running this script is **the first step** in order to run the other scripts. Serializing the dataset the memory footprint will be larger but it has good benefits:
 * Perform offline preprocessing and data augmentation.
 * Optimize data reading, online preprocessing and data augmentation.
 It can seem the benefits are poor, but in Deep Learning applications with this type of data, these optimization techniques save hours of training.
@@ -106,12 +143,9 @@ Creating a tfrecord dataset with smaller size data, and different split sets.
 foo@bar:~$ python tfrecord.py --source-dir /home/Task01_BrainTumor/ --target-source /home/dataset/ --reshape (120, 120, 152) --split (0.8, 0.1, 0.1)
 ```
 
-<br/><br/>
 
 ### Visualize
-The `visualize` script is just an auxiliary script for visualizing the data after doing the tfrecord
-and other possible transformations, e.g. offline data_augmentation. It is also useful for debugging
-purposes, e.g. testing some transformation or preprocessing functions, before deploying.
+The *visualize* script is just an auxiliary script for visualizing the data after doing the tfrecord and other possible transformations, e.g. offline data_augmentation. It is also useful for debugging purposes, e.g. testing some transformation or preprocessing functions, before deploying.
 
 ##### Usage:
 ```console
@@ -142,13 +176,13 @@ foo@bar:~$ python visualize.py --dataset-dir /home/dataset/ --sample 350 --no-sc
 ```
 <br/>
 <p align="center">
-<img src="./images/sample_2.gif" alt="Visualization of one sample">
+	<img src="./images/sample_2.gif" alt="Visualization of one sample">
 </p>
 
-<br/><br/>
+## Parallelism Modes
 
 ### Data Parallelism
-The `data_parallel` script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
+The *data_parallel* script is the first approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs data parallelism. 
 Data parallelism consists in, given n GPUs, the model is replicated n times and each replica is sent to a GPU. After that, the data is split into n chunks, i.e. the batch size is diveded by n, these chunks are distributed across the GPUs, where each chunk is assigned to a GPU. If we are training m models and m >= n, then we proceed sequentially for each model. Since we are using more than 1 GPU we are speeding-up the training of each model, and therefore, the m models.
 Our cluster has 4 GPUs per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, tf.MirroredStrategy is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.sgd which is a wrapper around tf.MultiWorkerMirroredStrategy.
 Both tf.MirroredStrategy and tf.MultiWorkerMirroredStrategy are built-in functions from tensorflow distributed API.
@@ -192,10 +226,9 @@ Afterwards, we can simply call the script with our config file.
 foo@bar:~$ python exp_parallel.py --config ./config.json
 ```
 
-<br/><br/>
 
 ### Experiment Parallelism
-The `exp_parallel` script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using ray.tune which manages all the low level parallelism implementaion.
+The *exp_parallel* script is the second approach presented in the paper, given a model in tensorflow and a TFRecord dataset it performs experiment parallelism using ray.tune which manages all the low level parallelism implementaion.
 Experiment parallelism consists in, given n GPUs, m models and m >= n, assigning a model to each GPU available. Hence, we are training n models at the same time, speeding-up the computations of all the m models.
 As mentioned above our cluster has 4 GPU per node, so if the number of GPUs used is less than 4, i.e. we are using only one node, ray.tune is used. For multi-node, i.e. >= 4 GPUs, we use ray.cluster which handles all the comunications between nodes and ray.tune.
 
@@ -245,7 +278,6 @@ Finally we can call the script with our config file.
 foo@bar:~$ python exp_parallel.py --config ./config.json
 ```
 
-<br/><br/>
 
 ### Multi-node Ray Cluster
 In our case we are using a cluster with 4 GPUs per node, so given n GPUs for n >= 4, we are using multi-node.
